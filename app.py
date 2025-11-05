@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-from os import environ, getenv
+from os import getenv
 from dotenv import load_dotenv
 from math import ceil
-
-load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = getenv("SECRET_KEY")
