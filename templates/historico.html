@@ -16,7 +16,7 @@
     <ul>
     {% for item in historico %}
         <li>
-            <strong>Equação:</strong> {{ item[0] if item | length > 0 else 'N/A' }} <br>
+            <strong>Função:</strong> {{ item[0] if item | length > 0 else 'N/A' }} <br>
             {% if item[0] == "Posição" %}
             <strong>Posição Inicial: </strong>{{ item[1][0] }} <br>
             <strong>Velocidade: </strong>{{ item[1][1] }} <br>
