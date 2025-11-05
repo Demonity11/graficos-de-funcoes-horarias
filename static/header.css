@@ -82,3 +82,10 @@ ul {
     display: block;
     background-color: #242f3d;
 }
+
+#historico {
+    background-color: transparent;
+    border: 0;
+    font-size: 18px;
+    padding: 0;
+}

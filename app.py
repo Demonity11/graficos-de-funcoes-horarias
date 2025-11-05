@@ -1,7 +1,12 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, url_for, redirect
+from os import environ, getenv
+from dotenv import load_dotenv
 from math import ceil
 
+load_dotenv(dotenv_path="settings.env")
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = getenv("SECRET_KEY")
 
 @app.route("/")
 def index():
@@ -11,6 +16,14 @@ def index():
 @app.route("/sobre")
 def sobre():
     return render_template("sobre.html")
+
+
+@app.route("/historico", methods=["GET", "POST"])
+def historico():
+    if not session.get("historico"):
+        session["historico"] = []
+
+    return render_template("historico.html", historico=session["historico"])
 
 
 @app.route("/posicao")
@@ -30,6 +43,9 @@ def espaco():
 
 @app.route("/result", methods=["POST"])
 def result():
+    if not session.get("historico"):
+        session["historico"] = []
+
     equacao = ""
     data = []
     seletor_unidade = request.form.get("seletor_unidade")
@@ -84,6 +100,9 @@ def result():
     #espaço, velocidade ou posição.
     if ac and s0 and v0:
         equacao = "Espaço"
+        session["historico"].append([equacao, [s0, v0, ac, t]])
+        session.modified = True
+
         for t in tempo:
             v0Xt = float(v0)*t
             acXt2 = (float(ac)/2)*t**2
@@ -91,17 +110,32 @@ def result():
 
     elif ac and v0:
         equacao = "Velocidade"
+        session["historico"].append([equacao, [v0, ac, t]])
+        session.modified = True
+
         for t in tempo:
             acXt = float(ac)*t
             data.append(float(v0)+ acXt)
     
     elif v:
         equacao = "Posição"
+        session["historico"].append([equacao, [s0, v, t]])
+        session.modified = True
+
         for t in tempo:
             vXt = float(v)*t
             data.append(float(s0) + vXt)
 
     return render_template("result.html", label=label, data=data, equacao=equacao, unidade=unidade)
+
+
+@app.route("/limpar_historico", methods=["POST"]) # Use POST para ações que modificam o estado
+def limpar_historico():
+    # Verifique se a chave 'historico' existe na sessão antes de tentar limpar
+    if "historico" in session:
+        del session["historico"] # Remove a chave 'historico' da sessão
+    # Redirecione o usuário de volta para a página do histórico ou outra página
+    return redirect(url_for("historico")) # Redireciona para a rota 'historico'
 
 
 #essa rota serve para lidar com erros que só vão acontecer caso tentem editar o html
@@ -111,4 +145,4 @@ def error_page(error):
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

@@ -1,0 +1,52 @@
+{% extends "header.html" %}
+
+{% block head %}
+
+    <title>Histórico</title>
+    <link rel="stylesheet" href="../static/funcoes.css">
+
+{% endblock %}
+
+{% block body %}
+
+<div class="header" id="conteiner_historico">
+<h2>Histórico de Cálculos</h2>
+
+{% if historico %}
+    <ul>
+    {% for item in historico %}
+        <li>
+            <strong>Equação:</strong> {{ item[0] if item | length > 0 else 'N/A' }} <br>
+            {% if item[0] == "Posição" %}
+            <strong>Posição Inicial: </strong>{{ item[1][0] }} <br>
+            <strong>Velocidade: </strong>{{ item[1][1] }} <br>
+            <strong>Tempo: </strong>{{ item[1][2] }} <br>
+            {% endif %}
+
+            {% if item[0] == "Velocidade" %}
+            <strong>Velocidade Inicial: </strong>{{ item[1][0] }} <br>
+            <strong>Aceleração: </strong>{{ item[1][1] }} <br>
+            <strong>Tempo: </strong>{{ item[1][2] }} <br>
+            {% endif %}
+
+            {% if item[0] == "Espaço" %}
+            <strong>Posição Inicial: </strong>{{ item[1][0] }} <br>
+            <strong>Velocidade Inicial: </strong>{{ item[1][1] }} <br>
+            <strong>Aceleração: </strong>{{ item[1][2] }} <br>
+            <strong>Tempo: </strong>{{ item[1][3] }} <br>
+            {% endif %}
+        </li> <br>
+    {% endfor %}
+    </ul>
+
+<form action="{{ url_for('limpar_historico') }}" method="post">
+    <button type="submit">Limpar Histórico</button>
+</form>
+
+{% else %}
+    <p>Nenhum cálculo no histórico.</p>
+{% endif %}
+
+</div>
+
+{% endblock %}
