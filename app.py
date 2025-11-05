@@ -3,7 +3,7 @@ from os import environ, getenv
 from dotenv import load_dotenv
 from math import ceil
 
-load_dotenv(dotenv_path="settings.env")
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = getenv("SECRET_KEY")
